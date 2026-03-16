@@ -80,8 +80,8 @@
           <p><strong>声優:</strong> ${anime.voice_actors || "-"}</p>
          <p><strong>楽曲情報:</strong></p>
 <ul>
-  ${(anime.songs || "").split(" / ").map((s, i) => {
-    const links = (anime.song_links || "").split(" / ");
+  ${(anime.songs || "").split(/\s*\/\s*/).map((s, i) => {
+    const links =(anime.song_links || "").split(/\s*\/\s*/);
     const link = links[i] || "#";
     return `<li>${s} <a href="${link}" target="_blank">聴く</a></li>`;
   }).join("")}
