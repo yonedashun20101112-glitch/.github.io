@@ -83,6 +83,9 @@ detail.innerHTML = `
 
 <h1>${anime.title || ""}</h1>
 
+<p><strong>シリーズ:</strong> ${anime.series_title || "-"}</p>
+<p><strong>区分:</strong> ${anime.season_label || "-"}</p>
+
 <p><strong>放送:</strong> ${formatDate(anime.broadcast_start)} 〜 ${formatDate(anime.broadcast_end)}</p>
 
 <p><strong>視聴:</strong> ${formatDate(anime.watch_start)} 〜 ${formatDate(anime.watch_end)}</p>
