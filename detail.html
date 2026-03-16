@@ -1,120 +1,147 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>作品詳細</title>
-  <style>
-    body{
-      font-family:sans-serif;
-      background:#f0f3f7;
-      margin:40px;
-      color:#222;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品詳細</title>
 
-    .container{
-      max-width:900px;
-      margin:0 auto;
-    }
+<style>
+body{
+font-family:sans-serif;
+background:#f0f3f7;
+margin:40px;
+color:#222;
+}
 
-    .card{
-      background:white;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 3px 8px rgba(0,0,0,0.1);
-    }
+.container{
+max-width:900px;
+margin:0 auto;
+}
 
-    img{
-      width:100%;
-      border-radius:10px;
-      margin-bottom:16px;
-    }
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
 
-    a{
-      display:inline-block;
-      margin-bottom:20px;
-      text-decoration:none;
-    }
-  </style>
+img{
+width:100%;
+border-radius:10px;
+margin-bottom:16px;
+}
+
+a{
+display:inline-block;
+margin-bottom:20px;
+text-decoration:none;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <a href="index.html">← 一覧に戻る</a>
-    <div id="detail">読み込み中...</div>
-  </div>
+
+<div class="container">
+<a href="index.html">← 一覧に戻る</a>
+<div id="detail">読み込み中...</div>
+</div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyEECR8Meu6JFmCWkROPb9bLVBkLO2b94MgIUz_IzlZG2cSeKQ8uM3bKR1xXV-xWXReWQ/exec";
 
-  function formatDate(d){
-    if(!d) return "";
-    return String(d).slice(0, 10);
-  }
+const API_URL = "https://script.google.com/macros/s/AKfycbyEECR8Meu6JFmCWkROPb9bLVBkLO2b94MgIUz_IzlZG2cSeKQ8uM3bKR1xXV-xWXReWQ/exec";
 
-  function getIdFromUrl(){
-    const params = new URLSearchParams(location.search);
-    return params.get("id");
-  }
+function formatDate(d){
+if(!d) return "";
+return String(d).slice(0,10);
+}
 
-  async function loadDetail(){
-    const id = getIdFromUrl();
-    const res = await fetch(API_URL);
-    const data = await res.json();
+function getIdFromUrl(){
+const params = new URLSearchParams(location.search);
+return params.get("id");
+}
 
-    const anime = data.find(a => String(a.id) === String(id));
-    const detail = document.getElementById("detail");
+async function loadDetail(){
 
-    if(!anime){
-      detail.innerHTML = "<p>作品が見つかりませんでした。</p>";
-      return;
-    }
+const id = getIdFromUrl();
 
-    detail.innerHTML = `
-      <div class="card">
-        <img src="${anime.card_image || ""}" alt="${anime.title || ""}">
-        <h1>${anime.title || ""}</h1>
-        <p><strong>放送:</strong> ${formatDate(anime.broadcast_start)} 〜 ${formatDate(anime.broadcast_end)}</p>
-        <p><strong>視聴:</strong> ${formatDate(anime.watch_start)} 〜 ${formatDate(anime.watch_end)}</p>
-        <p><strong>評価:</strong> ${anime.score || "-"} (${anime.rank || "-"})</p>
-        <p><strong>状態:</strong> ${anime.status || "-"}</p>
-        <p><strong>声優:</strong> ${anime.voice_actors || "-"}</p>
-        <p><strong>楽曲情報:</strong></p>
-        <ul>
-          ${(anime.songs || "").split(" / ").map((s, i) => {
-            const links = (anime.song_links || "").split(" / ");
-            const link = (links[i] || "").trim();
+const res = await fetch(API_URL);
+const data = await res.json();
 
-            if (!s.trim()) return "";
+const anime = data.find(a => String(a.id) === String(id));
 
-            if (link) {
-              return `<li>${s.trim()} <a href="${link}" target="_blank" rel="noopener noreferrer">聴く</a></li>`;
-            } else {
-              return `<li>${s.trim()}</li>`;
-            }
-          }).join("")}
-        </ul>
-       <audio id="previewAudio" src="${anime.preview_audio || ""}" preload="auto" controls></audio>
-        <p><strong>メモ:</strong> ${anime.note || "-"}</p>
-      </div>
-    `;
+const detail = document.getElementById("detail");
 
-    const audio = document.getElementById("previewAudio");
-    if (!audio || !anime.preview_audio) return;
+if(!anime){
+detail.innerHTML = "<p>作品が見つかりませんでした。</p>";
+return;
+}
 
-    setTimeout(() => {
-      audio.currentTime = 0;
+detail.innerHTML = `
+<div class="card">
 
-      audio.play().catch(() => {
-        console.log("自動再生ブロック");
-      });
+<img src="${anime.card_image || ""}" alt="${anime.title || ""}">
 
-      setTimeout(() => {
-        audio.pause();
-      }, 10000);
-    }, 500);
-  }
+<h1>${anime.title || ""}</h1>
 
-  loadDetail();
+<p><strong>放送:</strong> ${formatDate(anime.broadcast_start)} 〜 ${formatDate(anime.broadcast_end)}</p>
+
+<p><strong>視聴:</strong> ${formatDate(anime.watch_start)} 〜 ${formatDate(anime.watch_end)}</p>
+
+<p><strong>評価:</strong> ${anime.score || "-"} (${anime.rank || "-"})</p>
+
+<p><strong>状態:</strong> ${anime.status || "-"}</p>
+
+<p><strong>声優:</strong> ${anime.voice_actors || "-"}</p>
+
+<p><strong>楽曲情報:</strong></p>
+
+<ul>
+${(anime.songs || "").split(" / ").map((s,i)=>{
+
+const links = (anime.song_links || "").split(" / ");
+const link = (links[i] || "").trim();
+
+if(!s.trim()) return "";
+
+if(link){
+return `<li>${s.trim()} <a href="${link}" target="_blank">聴く</a></li>`;
+}else{
+return `<li>${s.trim()}</li>`;
+}
+
+}).join("")}
+</ul>
+
+<audio id="previewAudio" src="${anime.preview_audio || ""}" preload="auto"></audio>
+
+<p><strong>メモ:</strong> ${anime.note || "-"}</p>
+
+</div>
+`;
+
+const audio = document.getElementById("previewAudio");
+
+if(!audio || !anime.preview_audio) return;
+
+setTimeout(()=>{
+
+audio.currentTime = 0;
+
+audio.play().catch(()=>{
+console.log("自動再生ブロック");
+});
+
+setTimeout(()=>{
+audio.pause();
+},10000);
+
+},500);
+
+}
+
+loadDetail();
+
 </script>
+
 </body>
 </html>
